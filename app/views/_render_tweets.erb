@@ -1,0 +1,8 @@
+<div class='wrapper'>
+  <% tweets.each do |tweet| %>
+    <div id="<%= tweet.id %>">
+      <h2><%=tweet.text%></h2>
+      <p><%=tweet.created_at%></p>
+    </div>
+  <% end %>
+</div>
