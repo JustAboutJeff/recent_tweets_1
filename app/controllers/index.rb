@@ -6,20 +6,11 @@ post '/tweets' do
   username = params[:username]
   twitter_user = TwitterUser.find_or_initialize_by_username(username)
 
-  if twitter_user.tweets.empty? # BUILD NEW USER AND THEIR TWEETS
-    most_recent_tweets = Twitter.user_timeline("@#{username}")
-    most_recent_tweets.each do |tweet|
-      twitter_user.tweets.build(text: tweet.text, tweet_id: tweet.id, tweet_date: tweet.created_at)
-    end
-  elsif twitter_user.stale? # UPDATE USER TWEETS
-    twitter_user.tweets.destroy
-    most_recent_tweets = Twitter.user_timeline("@#{username}")
-    most_recent_tweets.each do |tweet|
-      twitter_user.tweets.build(text: tweet.text, tweet_id: tweet.id, tweet_date: tweet.created_at)
-    end
+  if twitter_user.stale? # UPDATE A USERS TWEET CACHE
+    twitter_user.refresh
+    twitter_user.save 
   end
 
-  twitter_user.save 
   @tweets = twitter_user.tweets
 
   if request.xhr?
