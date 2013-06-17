@@ -3,12 +3,8 @@ get '/' do
 end
 
 post '/tweets' do
-  # TwitterUser.n()
   username = params[:username]
-
-
   twitter_user = TwitterUser.find_or_initialize_by_username(username)
-  # twitter_user = TwitterUser.where("username=?", username).first_or_initialize
 
   if twitter_user.tweets.empty? # BUILD NEW USER AND THEIR TWEETS
     most_recent_tweets = Twitter.user_timeline("@#{username}")
